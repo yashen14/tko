@@ -1,0 +1,342 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 3D Login Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+  50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.6); }
+}
+
+@keyframes slideInFromTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+.animate-slide-in {
+  animation: slideInFromTop 0.5s ease-out;
+}
+
+/* 3D Background Effects */
+.bg-3d-active {
+  background: transparent !important;
+  backdrop-filter: blur(1px);
+}
+
+.bg-3d-card {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.bg-3d-header {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(15px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Tone toggle animations */
+@keyframes soundWave {
+  0% { height: 0.5rem; }
+  50% { height: 1rem; }
+  100% { height: 0.5rem; }
+}
+
+.sound-wave {
+  animation: soundWave 1s ease-in-out infinite;
+}
+
+.sound-wave:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.sound-wave:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+/* Site Mode Styles */
+.work-mode {
+  /* Default work mode styling */
+}
+
+.easy-mode {
+  /* Easy mode styling for better mobile experience */
+  font-size: 1.1em;
+}
+
+.easy-mode .card {
+  @apply rounded-2xl shadow-lg;
+}
+
+.easy-mode .button {
+  @apply rounded-xl py-3 px-6 text-lg;
+}
+
+.easy-mode .input {
+  @apply rounded-xl py-3 px-4 text-lg;
+}
+
+.easy-mode .badge {
+  @apply rounded-full px-3 py-1 text-sm;
+}
+
+.easy-mode .tab-trigger {
+  @apply rounded-xl px-6 py-4 text-lg font-medium;
+}
+
+.easy-mode .dropdown-menu-item {
+  @apply py-3 px-4 text-base;
+}
+
+/* Responsive navigation improvements */
+@media (max-width: 640px) {
+  .easy-mode {
+    font-size: 1.2em;
+  }
+
+  .easy-mode .card {
+    @apply mx-2 rounded-3xl;
+  }
+
+  .easy-mode .button {
+    @apply rounded-2xl py-4 px-8 text-xl;
+  }
+
+  .easy-mode .input {
+    @apply rounded-2xl py-4 px-6 text-xl;
+  }
+}
+
+@layer base {
+  /**
+   * Tailwind CSS theme
+   * tailwind.config.ts expects the following color variables to be expressed as HSL values.
+   * A different format will require also updating the theme in tailwind.config.ts.
+  */
+  :root {
+    --background: 215 25% 98%;
+    --foreground: 215 25% 5%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 8%;
+
+    --primary: 215 80% 20%; /* Deep slate blue */
+    --primary-foreground: 215 25% 98%;
+
+    --secondary: 215 25% 88%; /* Light slate */
+    --secondary-foreground: 215 80% 20%;
+
+    --muted: 215 25% 92%;
+    --muted-foreground: 215 25% 45%;
+
+    --accent: 215 50% 15%;
+    --accent-foreground: 215 25% 98%;
+
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 210 20% 98%;
+
+    --border: 215 25% 85%;
+    --input: 215 25% 88%;
+    --ring: 215 80% 20%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 215 25% 6%;
+    --foreground: 215 25% 95%;
+
+    --card: 215 25% 8%;
+    --card-foreground: 215 25% 95%;
+
+    --popover: 215 25% 8%;
+    --popover-foreground: 215 25% 95%;
+
+    --primary: 215 80% 70%; /* Lighter slate blue */
+    --primary-foreground: 215 25% 8%;
+
+    --secondary: 215 25% 18%; /* Dark slate */
+    --secondary-foreground: 215 80% 70%;
+
+    --muted: 215 25% 12%;
+    --muted-foreground: 215 25% 60%;
+
+    --accent: 215 50% 25%;
+    --accent-foreground: 215 25% 95%;
+
+    --destructive: 0 75% 65%;
+    --destructive-foreground: 215 25% 8%;
+
+    --border: 215 25% 18%;
+    --input: 215 25% 12%;
+    --ring: 215 80% 70%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Enhanced card styling */
+  .card {
+    box-shadow:
+      0 1px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  .dark .card {
+    box-shadow:
+      0 1px 3px 0 rgba(0, 0, 0, 0.4),
+      0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  /* Enhanced button styling */
+  .btn-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.9) 100%);
+    transition: all 0.2s ease-in-out;
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.9) 0%, hsl(var(--primary) / 0.8) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Enhanced form inputs */
+  .form-input {
+    transition: all 0.2s ease-in-out;
+    border: 1px solid hsl(var(--border));
+  }
+
+  .form-input:focus {
+    border-color: hsl(var(--ring));
+    box-shadow: 0 0 0 3px hsl(var(--ring) / 0.1);
+  }
+
+  /* Professional tables */
+  .data-table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .data-table th {
+    background: linear-gradient(to bottom, hsl(var(--muted)), hsl(var(--muted) / 0.8));
+    font-weight: 600;
+    letter-spacing: 0.025em;
+  }
+
+  .data-table tr:hover {
+    background: hsl(var(--accent) / 0.5);
+    transition: background-color 0.15s ease-in-out;
+  }
+
+  /* Enhanced scrollbars */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.5);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.7);
+  }
+
+  /* Professional gradients */
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%);
+  }
+
+  .gradient-secondary {
+    background: linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(var(--secondary) / 0.8) 100%);
+  }
+
+  /* Enhanced shadows */
+  .shadow-professional {
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .shadow-professional-lg {
+    box-shadow:
+      0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Line clamp utilities */
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+}
