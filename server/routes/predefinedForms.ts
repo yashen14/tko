@@ -997,7 +997,14 @@ const legacyPredefinedForms: Form[] = [
       {
         id: "field-signature-discovery",
         type: "signature",
-        label: "Signature",
+        label: "Client Signature",
+        required: false,
+        filename: "",
+      },
+      {
+        id: "field-signature-staff-discovery",
+        type: "signature",
+        label: "Staff Signature",
         required: false,
         filename: "",
       },
