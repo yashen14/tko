@@ -488,17 +488,49 @@ export const handleSubmitForm: RequestHandler = async (req, res) => {
   try {
     const { jobId, formId, data, signature, signature_staff } = req.body;
 
+    // Map signature fields from form data if direct signature parameters are not provided
+    let finalSignature = signature;
+    let finalSignature_staff = signature_staff;
+
+    // If no direct signatures provided, try to extract from form data
+    if (!finalSignature && !finalSignature_staff) {
+      // Check for signature fields in form data based on form type
+      const signatureFieldMappings: Record<string, {client: string, staff: string}> = {
+        "form-clearance-certificate": {
+          client: "field-signature-clearance",
+          staff: "field-signature-staff-clearance"
+        },
+        "form-discovery-geyser": {
+          client: "field-signature-discovery",
+          staff: "field-signature-staff-discovery"
+        },
+        "form-liability-certificate": {
+          client: "field-signature-liability",
+          staff: "field-signature-staff-liability"
+        }
+      };
+
+      const mapping = signatureFieldMappings[formId];
+      if (mapping) {
+        finalSignature = data[mapping.client] || finalSignature;
+        finalSignature_staff = data[mapping.staff] || finalSignature_staff;
+        console.log("Mapped signatures from form data:");
+        console.log("- Client signature mapped from", mapping.client, ":", !!finalSignature);
+        console.log("- Staff signature mapped from", mapping.staff, ":", !!finalSignature_staff);
+      }
+    }
+
     // Debug logging for signature data
     console.log("Form submission received:");
     console.log("- jobId:", jobId);
     console.log("- formId:", formId);
-    console.log("- signature present:", !!signature);
-    console.log("- signature type:", typeof signature);
-    console.log("- signature length:", signature ? signature.length : 0);
-    console.log("- signature_staff present:", !!signature_staff);
-    console.log("- signature_staff type:", typeof signature_staff);
-    console.log("- signature_staff length:", signature_staff ? signature_staff.length : 0);
-    console.log("- signature_staff value:", signature_staff === "" ? "Empty string" : signature_staff === undefined ? "Undefined" : signature_staff === null ? "Null" : "Has data");
+    console.log("- signature present:", !!finalSignature);
+    console.log("- signature type:", typeof finalSignature);
+    console.log("- signature length:", finalSignature ? finalSignature.length : 0);
+    console.log("- signature_staff present:", !!finalSignature_staff);
+    console.log("- signature_staff type:", typeof finalSignature_staff);
+    console.log("- signature_staff length:", finalSignature_staff ? finalSignature_staff.length : 0);
+    console.log("- signature_staff value:", finalSignature_staff === "" ? "Empty string" : finalSignature_staff === undefined ? "Undefined" : finalSignature_staff === null ? "Null" : "Has data");
 
     if (!jobId || !formId || !data) {
       return res.status(400).json({
