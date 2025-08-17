@@ -173,17 +173,17 @@ async function processDualSignatures(pdfDoc: any, formData: any, formType: strin
 
       const pageHeight = page.getHeight();
       page.drawImage(signatureImage, {
-        x: dualPositions.staff.x,
-        y: pageHeight - dualPositions.staff.y - dualPositions.staff.height,
-        width: dualPositions.staff.width,
-        height: dualPositions.staff.height,
-        opacity: dualPositions.staff.opacity || 0.7,
+        x: dualPositions.signature_staff.x,
+        y: pageHeight - dualPositions.signature_staff.y - dualPositions.signature_staff.height,
+        width: dualPositions.signature_staff.width,
+        height: dualPositions.signature_staff.height,
+        opacity: dualPositions.signature_staff.opacity || 0.7,
       });
 
       // Add staff signature label
       page.drawText("Staff Signature", {
-        x: dualPositions.staff.x,
-        y: pageHeight - dualPositions.staff.y + 15,
+        x: dualPositions.signature_staff.x,
+        y: pageHeight - dualPositions.signature_staff.y + 15,
         size: 8,
         color: rgb(0.3, 0.3, 0.3),
       });
