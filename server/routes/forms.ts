@@ -564,8 +564,8 @@ export const handleSubmitForm: RequestHandler = async (req, res) => {
       data,
       submittedAt: new Date().toISOString(),
       submissionNumber,
-      signature, // Client signature
-      signature_staff, // Staff signature (optional)
+      signature: finalSignature, // Client signature (mapped if necessary)
+      signature_staff: finalSignature_staff, // Staff signature (mapped if necessary)
     };
 
     // Debug logging for the submission object
