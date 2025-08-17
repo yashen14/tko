@@ -359,17 +359,42 @@ export function AdminPopulatedPDFViewer({
                   <CardTitle className="text-sm">Form Fields</CardTitle>
                 </CardHeader>
                 <CardContent className="text-xs space-y-3">
+                  {/* Form data fields */}
                   {Object.entries(formSubmission.data || {}).map(([key, value]) => (
                     <div key={key} className="border-b border-gray-100 pb-2 last:border-b-0">
                       <div className="font-medium text-gray-700 mb-1">
                         {key.replace(/^field-/, '').replace(/-/g, ' ').toUpperCase()}
                       </div>
                       <div className="text-gray-600 break-words">
-                        {formatDataValue(value)}
+                        {formatDataValue(value, key)}
                       </div>
                     </div>
                   ))}
-                  {Object.keys(formSubmission.data || {}).length === 0 && (
+
+                  {/* Direct signature fields (outside of data object) */}
+                  {formSubmission.signature && (
+                    <div className="border-b border-gray-100 pb-2 last:border-b-0">
+                      <div className="font-medium text-gray-700 mb-1">
+                        CLIENT SIGNATURE
+                      </div>
+                      <div className="text-gray-600 break-words">
+                        {formatDataValue(formSubmission.signature, 'signature')}
+                      </div>
+                    </div>
+                  )}
+
+                  {formSubmission.signature_staff && (
+                    <div className="border-b border-gray-100 pb-2 last:border-b-0">
+                      <div className="font-medium text-gray-700 mb-1">
+                        STAFF SIGNATURE
+                      </div>
+                      <div className="text-gray-600 break-words">
+                        {formatDataValue(formSubmission.signature_staff, 'signature_staff')}
+                      </div>
+                    </div>
+                  )}
+
+                  {Object.keys(formSubmission.data || {}).length === 0 && !formSubmission.signature && !formSubmission.signature_staff && (
                     <p className="text-gray-400 italic">No form data available</p>
                   )}
                 </CardContent>
