@@ -203,7 +203,7 @@ export const handleUpdateUser: RequestHandler = (req, res) => {
   }
 };
 
-export const handleUpdateUserPassword: RequestHandler = (req, res) => {
+export const handleUpdateUserPassword: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
     const { password } = req.body;
@@ -228,11 +228,22 @@ export const handleUpdateUserPassword: RequestHandler = (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Update password
+    // Update password in memory
     users[userIndex].password = password;
+
+    // Save updated user to MongoDB to persist changes
+    try {
+      const { saveUserToMongo } = await import("../utils/mongoDataAccess");
+      await saveUserToMongo(users[userIndex]);
+      console.log(`Password updated and saved to MongoDB for user: ${id}`);
+    } catch (mongoError) {
+      console.error("Failed to save password update to MongoDB:", mongoError);
+      // Don't fail the request if MongoDB sync fails, but log the error
+    }
 
     res.json({ message: "Password updated successfully" });
   } catch (error) {
+    console.error("Error updating password:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
