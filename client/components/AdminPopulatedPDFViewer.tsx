@@ -174,12 +174,17 @@ export function AdminPopulatedPDFViewer({
     }
   };
 
-  const formatDataValue = (value: any): string => {
+  const formatDataValue = (value: any, key?: string): string => {
     if (typeof value === 'boolean') {
       return value ? 'Yes' : 'No';
     }
     if (typeof value === 'string' && value.startsWith('data:image/')) {
-      return '[Signature/Image Data]';
+      // Show signature info instead of hiding it
+      const isSignature = key?.toLowerCase().includes('signature');
+      if (isSignature) {
+        return `✓ Signature Present (${Math.round(value.length / 1000)}KB)`;
+      }
+      return '[Image Data]';
     }
     if (Array.isArray(value)) {
       return value.join(', ');
