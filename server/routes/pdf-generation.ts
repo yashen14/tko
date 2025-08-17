@@ -1959,6 +1959,27 @@ async function generateMaterialListPDF(submission: any): Promise<Uint8Array> {
     });
   }
 
+  // Process signatures before saving
+  try {
+    console.log("generateMaterialListPDF - Processing signatures");
+    const firstPage = pdfDoc.getPages()[0];
+    if (firstPage) {
+      console.log("generateMaterialListPDF - Has signatures to process:", !!(submission.signature || submission.signature_staff));
+
+      // Check if this form supports signatures based on signaturePositions
+      const dualPositions = getDualSignaturePositions("material-list-form");
+      if (dualPositions || submission.signature || submission.signature_staff) {
+        console.log("generateMaterialListPDF - Processing dual signatures");
+        await processDualSignatures(pdfDoc, submission, "material-list-form", firstPage);
+      } else {
+        console.log("generateMaterialListPDF - No signature positions configured for material-list-form");
+      }
+    }
+  } catch (signatureError) {
+    console.error("generateMaterialListPDF - Error processing signatures:", signatureError);
+    // Continue without signatures rather than failing
+  }
+
   try {
     console.log("generateMaterialListPDF - Saving PDF document");
     const pdfBytes = await pdfDoc.save();
