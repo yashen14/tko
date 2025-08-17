@@ -167,7 +167,7 @@ export const handleGetUsers: RequestHandler = (req, res) => {
   }
 };
 
-export const handleUpdateUser: RequestHandler = (req, res) => {
+export const handleUpdateUser: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
     const updates = req.body;
@@ -195,10 +195,21 @@ export const handleUpdateUser: RequestHandler = (req, res) => {
       ...updateData,
     };
 
+    // Save updated user to MongoDB to persist changes
+    try {
+      const { saveUserToMongo } = await import("../utils/mongoDataAccess");
+      await saveUserToMongo(users[userIndex]);
+      console.log(`User updated and saved to MongoDB: ${id}`);
+    } catch (mongoError) {
+      console.error("Failed to save user update to MongoDB:", mongoError);
+      // Don't fail the request if MongoDB sync fails, but log the error
+    }
+
     // Remove password from response
     const { password: _, ...userWithoutPassword } = users[userIndex];
     res.json(userWithoutPassword);
   } catch (error) {
+    console.error("Error updating user:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
