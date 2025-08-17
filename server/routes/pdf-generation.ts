@@ -965,7 +965,12 @@ async function generateDiscoveryPDF(submission: any): Promise<Uint8Array> {
   const firstPage = pages[0];
 
   if (firstPage) {
-    await processDualSignatures(pdfDoc, data, "discovery-form", firstPage);
+    console.log("generateDiscoveryPDF - Processing signatures for submission:", submission.id);
+    console.log("generateDiscoveryPDF - Submission signatures available:", {
+      signature: !!submission.signature,
+      signature_staff: !!submission.signature_staff
+    });
+    await processDualSignatures(pdfDoc, submission, "discovery-form", firstPage);
   } else {
     console.error("No pages found in Discovery PDF for signature placement");
   }
