@@ -627,7 +627,12 @@ async function generateClearancePDF(submission: any): Promise<Uint8Array> {
   const firstPage = pages[0];
 
   if (firstPage) {
-    await processDualSignatures(pdfDoc, data, "clearance-certificate-form", firstPage);
+    console.log("generateClearancePDF - Processing signatures for submission:", submission.id);
+    console.log("generateClearancePDF - Submission signatures available:", {
+      signature: !!submission.signature,
+      signature_staff: !!submission.signature_staff
+    });
+    await processDualSignatures(pdfDoc, submission, "clearance-certificate-form", firstPage);
   } else {
     console.error("No pages found in Clearance PDF for signature placement");
   }
@@ -1131,7 +1136,12 @@ async function generateLiabilityPDF(submission: any): Promise<Uint8Array> {
   const firstPage = pages[0];
 
   if (firstPage) {
-    await processDualSignatures(pdfDoc, data, "liability-form", firstPage);
+    console.log("generateLiabilityPDF - Processing signatures for submission:", submission.id);
+    console.log("generateLiabilityPDF - Submission signatures available:", {
+      signature: !!submission.signature,
+      signature_staff: !!submission.signature_staff
+    });
+    await processDualSignatures(pdfDoc, submission, "liability-form", firstPage);
   } else {
     console.error("No pages found in Liability PDF for signature placement");
   }
