@@ -198,8 +198,20 @@ export async function initializeDataFromMongo() {
     jobs.length = 0;
     jobs.push(...mongoJobs);
 
-    users.length = 0;
-    users.push(...mongoUsers);
+    // Handle user initialization - if MongoDB is empty, keep default users and save them
+    if (mongoUsers.length === 0) {
+      console.log("No users found in MongoDB. Initializing with default users...");
+      // Keep the existing default users from auth.ts and save them to MongoDB
+      for (const user of users) {
+        await saveUserToMongo(user);
+      }
+      console.log(`Saved ${users.length} default users to MongoDB`);
+    } else {
+      // Replace with MongoDB users if they exist
+      users.length = 0;
+      users.push(...mongoUsers);
+      console.log(`Loaded ${mongoUsers.length} users from MongoDB`);
+    }
 
     formSubmissions.length = 0;
     formSubmissions.push(...mongoSubmissions);
