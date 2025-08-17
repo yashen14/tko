@@ -144,17 +144,17 @@ async function processDualSignatures(pdfDoc: any, formData: any, formType: strin
 
       const pageHeight = page.getHeight();
       page.drawImage(signatureImage, {
-        x: dualPositions.client.x,
-        y: pageHeight - dualPositions.client.y - dualPositions.client.height,
-        width: dualPositions.client.width,
-        height: dualPositions.client.height,
-        opacity: dualPositions.client.opacity || 0.7,
+        x: dualPositions.signature.x,
+        y: pageHeight - dualPositions.signature.y - dualPositions.signature.height,
+        width: dualPositions.signature.width,
+        height: dualPositions.signature.height,
+        opacity: dualPositions.signature.opacity || 0.7,
       });
 
       // Add client signature label
       page.drawText("Client Signature", {
-        x: dualPositions.client.x,
-        y: pageHeight - dualPositions.client.y + 15,
+        x: dualPositions.signature.x,
+        y: pageHeight - dualPositions.signature.y + 15,
         size: 8,
         color: rgb(0.3, 0.3, 0.3),
       });
