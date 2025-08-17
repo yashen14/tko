@@ -106,7 +106,7 @@ export async function handleGetSignatures(
     const { jobId } = req.query;
 
     let signatures = formSubmissions.filter(
-      (sub) => sub.formType === "signature" || sub.signature,
+      (sub) => sub.formType === "signature" || sub.formType === "dual-signature" || sub.signature || sub.signature_staff,
     );
 
     if (jobId) {
