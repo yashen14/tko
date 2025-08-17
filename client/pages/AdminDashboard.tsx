@@ -2131,7 +2131,11 @@ BBPlumbing Team
                                             Submitted:{" "}
                                             {new Date(
                                               submission.submissionDate,
-                                            ).toLocaleDateString()}
+                                            ).toLocaleDateString()}{" "}
+                                            at{" "}
+                                            {new Date(
+                                              submission.submissionDate,
+                                            ).toLocaleTimeString()}
                                           </div>
                                         </div>
                                       </div>
