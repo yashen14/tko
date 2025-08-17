@@ -92,9 +92,9 @@ export const signaturePositions: PDFSignatureConfig = {
 // Function to get signature position for a specific form type
 export function getSignaturePosition(formType: string): SignaturePosition {
   const config = signaturePositions[formType];
-  if (config && 'client' in config) {
-    // For backward compatibility, return client signature position for legacy calls
-    return config.client;
+  if (config && 'signature' in config) {
+    // For backward compatibility, return main signature position for legacy calls
+    return config.signature;
   }
   return config as SignaturePosition || {
     x: 400,
@@ -108,7 +108,7 @@ export function getSignaturePosition(formType: string): SignaturePosition {
 // Function to get dual signature positions for forms that support them
 export function getDualSignaturePositions(formType: string): DualSignaturePositions | null {
   const config = signaturePositions[formType];
-  if (config && 'client' in config) {
+  if (config && 'signature' in config) {
     return config as DualSignaturePositions;
   }
   return null;
