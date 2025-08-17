@@ -5,8 +5,9 @@ import connectToDatabase from "../utils/mongodb";
 
 interface SignatureSubmission {
   jobId: string;
-  formType: "material" | "noncompliance" | "liability" | "signature";
-  signature: string;
+  formType: "material" | "noncompliance" | "liability" | "signature" | "clearance-certificate" | "discovery" | "absa" | "sahl-certificate";
+  signature?: string; // Main signature (client signature for dual forms)
+  signature_staff?: string; // Staff signature for dual signature forms
   formData?: any;
   submittedBy: string;
 }
@@ -20,32 +21,48 @@ export async function handleSubmitSignature(
       jobId,
       formType,
       signature,
+      signature_staff,
       formData,
       submittedBy,
     }: SignatureSubmission = req.body;
 
-    if (!jobId || !signature || !submittedBy) {
+    if (!jobId || (!signature && !signature_staff) || !submittedBy) {
       res.status(400).json({
-        error: "Missing required fields: jobId, signature, submittedBy",
+        error: "Missing required fields: jobId, at least one signature, submittedBy",
       });
       return;
     }
+
+    // Determine if this is a dual signature form
+    const dualSignatureForms = ["liability", "clearance-certificate", "discovery"];
+    const isDualSignatureForm = dualSignatureForms.includes(formType);
 
     // Create submission object
     const submission = {
       id: `signature-${jobId}-${Date.now()}`,
       jobId,
-      formId: `signature-${formType}`,
-      formType,
+      formId: `${formType}-form`,
+      formType: isDualSignatureForm ? "dual-signature" : "signature",
       data: {
-        signature,
+        ...(signature && { signature }),
+        ...(signature_staff && { signature_staff }),
         ...formData,
       },
-      signature,
+      ...(signature && { signature }),
+      ...(signature_staff && { signature_staff }),
       submittedBy,
       submittedAt: new Date().toISOString(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      ...(isDualSignatureForm && {
+        signatureStatus: {
+          clientRequired: true,
+          staffRequired: true,
+          clientSigned: !!signature,
+          staffSigned: !!signature_staff,
+          isComplete: !!(signature && signature_staff)
+        }
+      })
     };
 
     // Save to local array (existing system)
@@ -68,7 +85,9 @@ export async function handleSubmitSignature(
     res.status(201).json({
       success: true,
       submission,
-      message: "Signature submitted successfully",
+      message: isDualSignatureForm
+        ? `Dual signature submitted successfully (${signature ? 'Client' : ''}${signature && signature_staff ? ' & ' : ''}${signature_staff ? 'Staff' : ''})`
+        : "Signature submitted successfully",
     });
   } catch (error) {
     console.error("Error submitting signature:", error);
