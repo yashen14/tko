@@ -167,7 +167,7 @@ export const handleGetUsers: RequestHandler = (req, res) => {
   }
 };
 
-export const handleUpdateUser: RequestHandler = (req, res) => {
+export const handleUpdateUser: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
     const updates = req.body;
@@ -195,15 +195,26 @@ export const handleUpdateUser: RequestHandler = (req, res) => {
       ...updateData,
     };
 
+    // Save updated user to MongoDB to persist changes
+    try {
+      const { saveUserToMongo } = await import("../utils/mongoDataAccess");
+      await saveUserToMongo(users[userIndex]);
+      console.log(`User updated and saved to MongoDB: ${id}`);
+    } catch (mongoError) {
+      console.error("Failed to save user update to MongoDB:", mongoError);
+      // Don't fail the request if MongoDB sync fails, but log the error
+    }
+
     // Remove password from response
     const { password: _, ...userWithoutPassword } = users[userIndex];
     res.json(userWithoutPassword);
   } catch (error) {
+    console.error("Error updating user:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
-export const handleUpdateUserPassword: RequestHandler = (req, res) => {
+export const handleUpdateUserPassword: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
     const { password } = req.body;
@@ -228,11 +239,22 @@ export const handleUpdateUserPassword: RequestHandler = (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Update password
+    // Update password in memory
     users[userIndex].password = password;
+
+    // Save updated user to MongoDB to persist changes
+    try {
+      const { saveUserToMongo } = await import("../utils/mongoDataAccess");
+      await saveUserToMongo(users[userIndex]);
+      console.log(`Password updated and saved to MongoDB for user: ${id}`);
+    } catch (mongoError) {
+      console.error("Failed to save password update to MongoDB:", mongoError);
+      // Don't fail the request if MongoDB sync fails, but log the error
+    }
 
     res.json({ message: "Password updated successfully" });
   } catch (error) {
+    console.error("Error updating password:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };

@@ -129,8 +129,8 @@ export function EnhancedLiabilityForm({
 
   const [signature, setSignature] = useState<string>(""); // Client signature
   const [signature_staff, setSignature_staff] = useState<string>(""); // Staff signature
-  const [showClientSignaturePad, setShowClientSignaturePad] = useState(false);
-  const [showStaffSignaturePad, setShowStaffSignaturePad] = useState(false);
+  const [showSignaturePad, setShowSignaturePad] = useState(false);
+  const [signatureType, setSignatureType] = useState<'client' | 'staff'>('client');
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const updateField = (field: keyof LiabilityFormData, value: string | string[]) => {
@@ -152,6 +152,15 @@ export function EnhancedLiabilityForm({
 
   const handleFinalSubmit = () => {
     onSubmit(formData, signature, signature_staff);
+  };
+
+  const handleSignatureComplete = (signatureData: string) => {
+    if (signatureType === 'client') {
+      setSignature(signatureData);
+    } else {
+      setSignature_staff(signatureData);
+    }
+    setShowSignaturePad(false);
   };
 
   return (
@@ -567,96 +576,111 @@ export function EnhancedLiabilityForm({
         </CardContent>
       </Card>
 
-      {/* Signature Section */}
-      {formSubmitted && (
-        <Card className="w-full">
-          <CardHeader className="bg-gradient-to-r from-blue-50 to-green-50">
-            <CardTitle className="flex items-center text-blue-800">
-              <PenTool className="h-6 w-6 mr-3" />
-              Signatures Required
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="space-y-6">
-              {/* Client Signature */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold">Client Signature</h3>
-                    <p className="text-sm text-gray-600">
-                      Required: {formData.client || "Client"}
-                    </p>
-                  </div>
-                  <Badge variant={signature ? "default" : "secondary"}>
-                    {signature ? "Signed" : "Required"}
-                  </Badge>
-                </div>
-
-                {signature ? (
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1 p-4 border-2 border-green-200 rounded-lg bg-green-50">
-                      <p className="text-sm text-green-700 font-medium">✓ Client signature captured</p>
-                    </div>
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowClientSignaturePad(true)}
-                      size="sm"
-                    >
-                      Update Signature
-                    </Button>
-                  </div>
-                ) : (
-                  <Button
-                    onClick={() => setShowClientSignaturePad(true)}
-                    className="w-full"
-                    variant="outline"
-                  >
-                    <PenTool className="h-4 w-4 mr-2" />
-                    Add Client Signature
-                  </Button>
-                )}
+      {/* Signature Section - Always Visible */}
+      <Card className="w-full">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-green-50">
+          <CardTitle className="flex items-center text-blue-800">
+            <PenTool className="h-6 w-6 mr-3" />
+            Signatures
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="space-y-6">
+            {/* Client Signature */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-base font-medium">Client Signature</Label>
+                <Badge variant={signature ? "default" : "destructive"}>
+                  {signature ? "Signed" : "Required"}
+                </Badge>
               </div>
 
-              {/* Staff Signature */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold">Staff Signature</h3>
-                    <p className="text-sm text-gray-600">
-                      Optional: {formData.plumber || assignedStaff?.name || "Staff"}
-                    </p>
-                  </div>
-                  <Badge variant={signature_staff ? "default" : "secondary"}>
-                    {signature_staff ? "Signed" : "Optional"}
-                  </Badge>
-                </div>
 
-                {signature_staff ? (
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1 p-4 border-2 border-blue-200 rounded-lg bg-blue-50">
-                      <p className="text-sm text-blue-700 font-medium">✓ Staff signature captured</p>
+              {signature ? (
+                <div className="flex items-center gap-4">
+                  <div className="flex flex-col gap-2">
+                    <img
+                      src={signature}
+                      alt="Client signature"
+                      className="border rounded h-16 w-32 object-contain bg-gray-50"
+                    />
+                    <div className="text-xs text-gray-500">
+                      {signature ? `${signature.substring(0, 20)}...` : 'No data'}
                     </div>
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowStaffSignaturePad(true)}
-                      size="sm"
-                    >
-                      Update Signature
-                    </Button>
                   </div>
-                ) : (
                   <Button
-                    onClick={() => setShowStaffSignaturePad(true)}
-                    className="w-full"
                     variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSignatureType('client');
+                      setShowSignaturePad(true);
+                    }}
                   >
-                    <PenTool className="h-4 w-4 mr-2" />
-                    Add Staff Signature
+                    Update Signature
                   </Button>
-                )}
+                </div>
+              ) : (
+                <Button
+                  onClick={() => {
+                    setSignatureType('client');
+                    setShowSignaturePad(true);
+                  }}
+                  className="w-full"
+                >
+                  Sign Here
+                </Button>
+              )}
+            </div>
+
+            {/* Staff Signature */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-base font-medium">Staff Signature</Label>
+                <Badge variant={signature_staff ? "default" : "secondary"}>
+                  {signature_staff ? "Signed" : "Optional"}
+                </Badge>
               </div>
 
-              {/* Final Submit */}
+
+              {signature_staff ? (
+                <div className="flex items-center gap-4">
+                  <div className="flex flex-col gap-2">
+                    <img
+                      src={signature_staff}
+                      alt="Staff signature"
+                      className="border rounded h-16 w-32 object-contain bg-gray-50"
+                    />
+                    <div className="text-xs text-gray-500">
+                      {signature_staff ? `${signature_staff.substring(0, 20)}...` : 'No data'}
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSignatureType('staff');
+                      setShowSignaturePad(true);
+                    }}
+                  >
+                    Update Signature
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setSignatureType('staff');
+                    setShowSignaturePad(true);
+                  }}
+                  className="w-full"
+                >
+                  Sign Here (Optional)
+                </Button>
+              )}
+            </div>
+
+            {/* Final Submit */}
+            {formSubmitted && (
               <div className="pt-4 border-t">
                 <Button
                   onClick={handleFinalSubmit}
@@ -672,10 +696,10 @@ export function EnhancedLiabilityForm({
                   </p>
                 )}
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Instructions Card */}
       <Card>
@@ -700,30 +724,13 @@ export function EnhancedLiabilityForm({
         </CardContent>
       </Card>
 
-      {/* Signature Pads */}
-      {showClientSignaturePad && (
-        <FullScreenSignaturePad
-          title="Client Signature"
-          subtitle={`Please sign to confirm the liability waiver details for ${formData.client}`}
-          onSave={(signatureData) => {
-            setSignature(signatureData);
-            setShowClientSignaturePad(false);
-          }}
-          onCancel={() => setShowClientSignaturePad(false)}
-        />
-      )}
-
-      {showStaffSignaturePad && (
-        <FullScreenSignaturePad
-          title="Staff Signature"
-          subtitle={`Staff signature for ${formData.plumber || assignedStaff?.name}`}
-          onSave={(signatureData) => {
-            setSignature_staff(signatureData);
-            setShowStaffSignaturePad(false);
-          }}
-          onCancel={() => setShowStaffSignaturePad(false)}
-        />
-      )}
+      {/* Signature Pad */}
+      <FullScreenSignaturePad
+        isOpen={showSignaturePad}
+        onSignatureComplete={handleSignatureComplete}
+        onCancel={() => setShowSignaturePad(false)}
+        title={`${signatureType === 'client' ? 'Client' : 'Staff'} Signature Required`}
+      />
     </div>
   );
 }

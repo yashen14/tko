@@ -144,17 +144,17 @@ async function processDualSignatures(pdfDoc: any, formData: any, formType: strin
 
       const pageHeight = page.getHeight();
       page.drawImage(signatureImage, {
-        x: dualPositions.client.x,
-        y: pageHeight - dualPositions.client.y - dualPositions.client.height,
-        width: dualPositions.client.width,
-        height: dualPositions.client.height,
-        opacity: dualPositions.client.opacity || 0.7,
+        x: dualPositions.signature.x,
+        y: pageHeight - dualPositions.signature.y - dualPositions.signature.height,
+        width: dualPositions.signature.width,
+        height: dualPositions.signature.height,
+        opacity: dualPositions.signature.opacity || 0.7,
       });
 
       // Add client signature label
       page.drawText("Client Signature", {
-        x: dualPositions.client.x,
-        y: pageHeight - dualPositions.client.y + 15,
+        x: dualPositions.signature.x,
+        y: pageHeight - dualPositions.signature.y + 15,
         size: 8,
         color: rgb(0.3, 0.3, 0.3),
       });
@@ -173,17 +173,17 @@ async function processDualSignatures(pdfDoc: any, formData: any, formType: strin
 
       const pageHeight = page.getHeight();
       page.drawImage(signatureImage, {
-        x: dualPositions.staff.x,
-        y: pageHeight - dualPositions.staff.y - dualPositions.staff.height,
-        width: dualPositions.staff.width,
-        height: dualPositions.staff.height,
-        opacity: dualPositions.staff.opacity || 0.7,
+        x: dualPositions.signature_staff.x,
+        y: pageHeight - dualPositions.signature_staff.y - dualPositions.signature_staff.height,
+        width: dualPositions.signature_staff.width,
+        height: dualPositions.signature_staff.height,
+        opacity: dualPositions.signature_staff.opacity || 0.7,
       });
 
       // Add staff signature label
       page.drawText("Staff Signature", {
-        x: dualPositions.staff.x,
-        y: pageHeight - dualPositions.staff.y + 15,
+        x: dualPositions.signature_staff.x,
+        y: pageHeight - dualPositions.signature_staff.y + 15,
         size: 8,
         color: rgb(0.3, 0.3, 0.3),
       });
@@ -627,7 +627,12 @@ async function generateClearancePDF(submission: any): Promise<Uint8Array> {
   const firstPage = pages[0];
 
   if (firstPage) {
-    await processDualSignatures(pdfDoc, data, "clearance-certificate-form", firstPage);
+    console.log("generateClearancePDF - Processing signatures for submission:", submission.id);
+    console.log("generateClearancePDF - Submission signatures available:", {
+      signature: !!submission.signature,
+      signature_staff: !!submission.signature_staff
+    });
+    await processDualSignatures(pdfDoc, submission, "clearance-certificate-form", firstPage);
   } else {
     console.error("No pages found in Clearance PDF for signature placement");
   }
@@ -965,7 +970,12 @@ async function generateDiscoveryPDF(submission: any): Promise<Uint8Array> {
   const firstPage = pages[0];
 
   if (firstPage) {
-    await processDualSignatures(pdfDoc, data, "discovery-form", firstPage);
+    console.log("generateDiscoveryPDF - Processing signatures for submission:", submission.id);
+    console.log("generateDiscoveryPDF - Submission signatures available:", {
+      signature: !!submission.signature,
+      signature_staff: !!submission.signature_staff
+    });
+    await processDualSignatures(pdfDoc, submission, "discovery-form", firstPage);
   } else {
     console.error("No pages found in Discovery PDF for signature placement");
   }
@@ -1126,7 +1136,12 @@ async function generateLiabilityPDF(submission: any): Promise<Uint8Array> {
   const firstPage = pages[0];
 
   if (firstPage) {
-    await processDualSignatures(pdfDoc, data, "liability-form", firstPage);
+    console.log("generateLiabilityPDF - Processing signatures for submission:", submission.id);
+    console.log("generateLiabilityPDF - Submission signatures available:", {
+      signature: !!submission.signature,
+      signature_staff: !!submission.signature_staff
+    });
+    await processDualSignatures(pdfDoc, submission, "liability-form", firstPage);
   } else {
     console.error("No pages found in Liability PDF for signature placement");
   }
@@ -1957,6 +1972,27 @@ async function generateMaterialListPDF(submission: any): Promise<Uint8Array> {
         yPosition -= 25;
       }
     });
+  }
+
+  // Process signatures before saving
+  try {
+    console.log("generateMaterialListPDF - Processing signatures");
+    const firstPage = pdfDoc.getPages()[0];
+    if (firstPage) {
+      console.log("generateMaterialListPDF - Has signatures to process:", !!(submission.signature || submission.signature_staff));
+
+      // Check if this form supports signatures based on signaturePositions
+      const dualPositions = getDualSignaturePositions("material-list-form");
+      if (dualPositions || submission.signature || submission.signature_staff) {
+        console.log("generateMaterialListPDF - Processing dual signatures");
+        await processDualSignatures(pdfDoc, submission, "material-list-form", firstPage);
+      } else {
+        console.log("generateMaterialListPDF - No signature positions configured for material-list-form");
+      }
+    }
+  } catch (signatureError) {
+    console.error("generateMaterialListPDF - Error processing signatures:", signatureError);
+    // Continue without signatures rather than failing
   }
 
   try {
