@@ -605,6 +605,10 @@ export function EnhancedLiabilityForm({
                     src={signature}
                     alt="Client signature"
                     className="border rounded h-16 w-32 object-contain bg-gray-50"
+                    onError={(e) => {
+                      console.error("LiabilityForm: Client signature image failed to load", signature);
+                      e.currentTarget.style.display = 'none';
+                    }}
                   />
                   <Button
                     variant="outline"
