@@ -155,10 +155,13 @@ export function EnhancedLiabilityForm({
   };
 
   const handleSignatureComplete = (signatureData: string) => {
+    console.log("LiabilityForm signature:", signatureType, signatureData ? "received" : "empty");
     if (signatureType === 'client') {
       setSignature(signatureData);
+      console.log("LiabilityForm: Set client signature");
     } else {
       setSignature_staff(signatureData);
+      console.log("LiabilityForm: Set staff signature");
     }
     setShowSignaturePad(false);
   };
