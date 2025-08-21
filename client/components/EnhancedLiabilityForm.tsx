@@ -644,11 +644,16 @@ export function EnhancedLiabilityForm({
 
               {signature_staff ? (
                 <div className="flex items-center gap-4">
-                  <img
-                    src={signature_staff}
-                    alt="Staff signature"
-                    className="border rounded h-16 w-32 object-contain bg-gray-50"
-                  />
+                  <div className="flex flex-col gap-2">
+                    <img
+                      src={signature_staff}
+                      alt="Staff signature"
+                      className="border rounded h-16 w-32 object-contain bg-gray-50"
+                    />
+                    <div className="text-xs text-gray-500">
+                      {signature_staff ? `${signature_staff.substring(0, 20)}...` : 'No data'}
+                    </div>
+                  </div>
                   <Button
                     variant="outline"
                     size="sm"
