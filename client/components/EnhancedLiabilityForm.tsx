@@ -656,6 +656,13 @@ export function EnhancedLiabilityForm({
                 </Badge>
               </div>
 
+              {/* Debug info */}
+              {process.env.NODE_ENV === 'development' && (
+                <div className="text-xs text-gray-500">
+                  Debug: signature_staff = {signature_staff ? `present (${signature_staff.length} chars)` : 'empty'}
+                </div>
+              )}
+
               {signature_staff ? (
                 <div className="flex items-center gap-4">
                   <img
