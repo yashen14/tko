@@ -720,10 +720,6 @@ export function EnhancedLiabilityForm({
         onSignatureComplete={handleSignatureComplete}
         onCancel={() => setShowSignaturePad(false)}
         title={`${signatureType === 'client' ? 'Client' : 'Staff'} Signature Required`}
-        subtitle={signatureType === 'client' ?
-          `Please sign to confirm the liability waiver details for ${formData.client}` :
-          `Staff signature for ${formData.plumber || assignedStaff?.name}`
-        }
       />
     </div>
   );
