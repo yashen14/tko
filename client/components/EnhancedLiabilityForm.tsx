@@ -712,30 +712,17 @@ export function EnhancedLiabilityForm({
         </CardContent>
       </Card>
 
-      {/* Signature Pads */}
-      {showClientSignaturePad && (
-        <FullScreenSignaturePad
-          title="Client Signature"
-          subtitle={`Please sign to confirm the liability waiver details for ${formData.client}`}
-          onSave={(signatureData) => {
-            setSignature(signatureData);
-            setShowClientSignaturePad(false);
-          }}
-          onCancel={() => setShowClientSignaturePad(false)}
-        />
-      )}
-
-      {showStaffSignaturePad && (
-        <FullScreenSignaturePad
-          title="Staff Signature"
-          subtitle={`Staff signature for ${formData.plumber || assignedStaff?.name}`}
-          onSave={(signatureData) => {
-            setSignature_staff(signatureData);
-            setShowStaffSignaturePad(false);
-          }}
-          onCancel={() => setShowStaffSignaturePad(false)}
-        />
-      )}
+      {/* Signature Pad */}
+      <FullScreenSignaturePad
+        isOpen={showSignaturePad}
+        onSignatureComplete={handleSignatureComplete}
+        onCancel={() => setShowSignaturePad(false)}
+        title={`${signatureType === 'client' ? 'Client' : 'Staff'} Signature Required`}
+        subtitle={signatureType === 'client' ?
+          `Please sign to confirm the liability waiver details for ${formData.client}` :
+          `Staff signature for ${formData.plumber || assignedStaff?.name}`
+        }
+      />
     </div>
   );
 }
