@@ -589,30 +589,17 @@ export function ClearanceCertificateForm({
         </CardContent>
       </Card>
 
-      {/* Signature Pads */}
-      {showClientSignaturePad && (
-        <FullScreenSignaturePad
-          title="Client Signature"
-          subtitle={`Please sign to confirm the clearance certificate details for ${formData.cname || formData.clientName}`}
-          onSave={(signatureData) => {
-            setSignature(signatureData);
-            setShowClientSignaturePad(false);
-          }}
-          onCancel={() => setShowClientSignaturePad(false)}
-        />
-      )}
-
-      {showStaffSignaturePad && (
-        <FullScreenSignaturePad
-          title="Staff Signature"
-          subtitle={`Staff signature for ${formData.staff || assignedStaff?.name}`}
-          onSave={(signatureData) => {
-            setSignature_staff(signatureData);
-            setShowStaffSignaturePad(false);
-          }}
-          onCancel={() => setShowStaffSignaturePad(false)}
-        />
-      )}
+      {/* Signature Pad */}
+      <FullScreenSignaturePad
+        isOpen={showSignaturePad}
+        onSignatureComplete={handleSignatureComplete}
+        onCancel={() => setShowSignaturePad(false)}
+        title={`${signatureType === 'client' ? 'Client' : 'Staff'} Signature Required`}
+        subtitle={signatureType === 'client' ?
+          `Please sign to confirm the clearance certificate details for ${formData.cname || formData.clientName}` :
+          `Staff signature for ${formData.staff || assignedStaff?.name}`
+        }
+      />
     </div>
   );
 }
