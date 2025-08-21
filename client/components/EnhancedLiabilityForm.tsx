@@ -155,12 +155,26 @@ export function EnhancedLiabilityForm({
   };
 
   const handleSignatureComplete = (signatureData: string) => {
+    console.log("EnhancedLiabilityForm - handleSignatureComplete called");
+    console.log("- signatureType:", signatureType);
+    console.log("- signatureData length:", signatureData?.length);
+    console.log("- signatureData starts with data:image:", signatureData?.startsWith('data:image/'));
+
     if (signatureType === 'client') {
+      console.log("- Setting client signature");
       setSignature(signatureData);
     } else {
+      console.log("- Setting staff signature");
       setSignature_staff(signatureData);
     }
     setShowSignaturePad(false);
+
+    // Log state after setting (will show in next render)
+    setTimeout(() => {
+      console.log("EnhancedLiabilityForm - After state update:");
+      console.log("- signature state:", signature ? "present" : "empty");
+      console.log("- signature_staff state:", signature_staff ? "present" : "empty");
+    }, 100);
   };
 
   return (
