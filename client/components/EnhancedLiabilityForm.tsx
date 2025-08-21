@@ -129,8 +129,8 @@ export function EnhancedLiabilityForm({
 
   const [signature, setSignature] = useState<string>(""); // Client signature
   const [signature_staff, setSignature_staff] = useState<string>(""); // Staff signature
-  const [showClientSignaturePad, setShowClientSignaturePad] = useState(false);
-  const [showStaffSignaturePad, setShowStaffSignaturePad] = useState(false);
+  const [showSignaturePad, setShowSignaturePad] = useState(false);
+  const [signatureType, setSignatureType] = useState<'client' | 'staff'>('client');
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const updateField = (field: keyof LiabilityFormData, value: string | string[]) => {
@@ -152,6 +152,15 @@ export function EnhancedLiabilityForm({
 
   const handleFinalSubmit = () => {
     onSubmit(formData, signature, signature_staff);
+  };
+
+  const handleSignatureComplete = (signatureData: string) => {
+    if (signatureType === 'client') {
+      setSignature(signatureData);
+    } else {
+      setSignature_staff(signatureData);
+    }
+    setShowSignaturePad(false);
   };
 
   return (
