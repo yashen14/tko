@@ -101,8 +101,8 @@ export function ClearanceCertificateForm({
   const [requiredFields, setRequiredFields] = useState<string[]>([]);
   const [signature, setSignature] = useState<string>(""); // Client signature
   const [signature_staff, setSignature_staff] = useState<string>(""); // Staff signature
-  const [showClientSignaturePad, setShowClientSignaturePad] = useState(false);
-  const [showStaffSignaturePad, setShowStaffSignaturePad] = useState(false);
+  const [showSignaturePad, setShowSignaturePad] = useState(false);
+  const [signatureType, setSignatureType] = useState<'client' | 'staff'>('client');
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -114,6 +114,15 @@ export function ClearanceCertificateForm({
 
   const handleFinalSubmit = () => {
     onSubmit(formData, signature, signature_staff);
+  };
+
+  const handleSignatureComplete = (signatureData: string) => {
+    if (signatureType === 'client') {
+      setSignature(signatureData);
+    } else {
+      setSignature_staff(signatureData);
+    }
+    setShowSignaturePad(false);
   };
 
   const updateField = (field: keyof ClearanceCertificateFormData, value: string) => {
